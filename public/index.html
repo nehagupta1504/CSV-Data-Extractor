@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Extractor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-container">
+            <h1>📂 CSV Field Extractor</h1>
+            <p class="subheading">Upload a CSV file, choose a field, and extract unique values.</p>
+
+            <form id="uploadForm">
+                <div class="upload-box">
+                    <input type="file" id="csvFile" accept=".csv" required>
+                    <label for="csvFile">📂 Choose CSV File</label>
+                    <span id="fileName" class="file-name">No file chosen</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="fieldName">🔍 Field to Extract:</label>
+                    <input type="text" id="fieldName" placeholder="Enter field name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="separator">📌 Choose Separator:</label>
+                    <select id="separator">
+                        <option value=" ">Space (default)</option>
+                        <option value=",">Comma (,)</option>
+                        <option value="|">Pipe (|)</option>
+                        <option value=";">Semicolon (;)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="fileType">📂 Select file format:</label>
+                    <select id="fileType">
+                        <option value="txt">Text File (.txt)</option>
+                        <option value="csv">CSV File (.csv)</option>
+                    </select>
+                </div>
+
+                <div class="input-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="downloadFile"> Download extracted data
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary">🚀 Extract Data</button>
+            </form>
+        </div>
+
+        <!-- Extracted Data Section -->
+        <div class="data-container">
+            <h2>✅ Extracted Data (<span id="dataCount">0</span> items):</h2>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
