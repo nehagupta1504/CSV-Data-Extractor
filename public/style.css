@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Main container */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    padding: 25px;
+    width: 90%;
+    max-width: 1100px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Form container */
+.form-container {
+    flex: 1;
+    padding: 20px;
+    min-width: 320px;
+}
+
+/* Extracted data container */
+.data-container {
+    flex: 1;
+    padding: 20px;
+    min-width: 320px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Upload Box */
+.upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.upload-box input {
+    display: none;
+}
+
+.upload-box label {
+    background: linear-gradient(135deg, #4c51bf, #5a67d8);
+    padding: 12px 20px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.upload-box label:hover {
+    background: linear-gradient(135deg, #5a67d8, #667eea);
+    transform: scale(1.05);
+}
+
+.file-name {
+    display: block;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    color: #e0e0e0;
+}
+
+/* Input Groups */
+.input-group {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.input-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.input-group input, 
+.input-group select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    transition: 0.3s ease-in-out;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* Ensure all input fields have equal width */
+.input-group input,
+.input-group select {
+    display: block;
+    width: calc(100% - 10px); /* Adjust for padding consistency */
+}
+
+/* Focus effect */
+.input-group input:focus, 
+.input-group select:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+/* Extract Button */
+.btn-primary {
+    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+    padding: 12px;
+    border: none;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #ff4757, #ff3b3b);
+    transform: scale(1.05);
+}
+
+/* Extracted Data */
+.result {
+    margin-top: 15px;
+    font-size: 14px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.result p {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease-in-out;
+}
+
+.result p:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .form-container, .data-container {
+        width: 100%;
+    }
+}
