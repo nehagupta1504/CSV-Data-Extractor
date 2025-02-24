@@ -1,43 +1,8 @@
 const fs = require('fs');
-const csv = require('csv-parser');
-<<<<<<< HEAD
-
-function extractEmails(csvFile, outputFile) {
-  const emails = new Set();
-
-  // Read existing emails from the output file if it exists
-  if (fs.existsSync(outputFile)) {
-    const existingEmails = fs.readFileSync(outputFile, 'utf8').split(' ');
-    existingEmails.forEach((email) => {
-      if (email.trim()) emails.add(email.trim());
-    });
-  }
-
-  fs.createReadStream(csvFile)
-    .pipe(csv())
-    .on('data', (row) => {
-      if (
-        row[' email'] &&
-        row[' email'].trim() &&
-        !emails.has(row[' email'].trim())
-      ) {
-        emails.add(row[' email'].trim());
-      }
-    })
-    .on('end', () => {
-      fs.writeFileSync(outputFile, Array.from(emails).join(' '), 'utf8');
-      console.log(`Emails extracted and updated in ${outputFile}`);
-    });
-}
-
-// Usage example
-const csvFilename = 'registration-list-2.csv'; // Replace with your actual file name
-const outputFilename = 'emails.txt'; // Output file
-extractEmails(csvFilename, outputFilename);
-=======
 const path = require('path');
 const express = require('express');
 const multer = require('multer');
+const csv = require('csv-parser');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
@@ -57,37 +22,32 @@ app.use(express.static('public'));
  */
 function extractField(csvFile, field, separator, outputFile, callback) {
   const extractedSet = new Set();
-  let headerChecked = false;
   let validField = false;
 
-  const stream = fs.createReadStream(csvFile)
+  fs.createReadStream(csvFile)
     .pipe(csv())
-    .on('data', (row) => {
-      if (!headerChecked) {
-        // Check headers on the first row
-        const headers = Object.keys(row).map(h => h.trim().toLowerCase());
-        if (headers.includes(field.toLowerCase())) {
-          validField = true;
-        }
-        headerChecked = true;
-        if (!validField) {
-          stream.destroy(new Error(`Field "${field}" not found in CSV headers.`));
-          return;
-        }
+    .on('headers', (headers) => {
+      // Trim headers and find the correct column name
+      const cleanHeaders = headers.map((h) => h.trim().toLowerCase());
+      validField = cleanHeaders.includes(field.toLowerCase());
+      if (!validField) {
+        return callback(new Error(`Field "${field}" not found in CSV headers.`), null);
       }
-
-      // Extract and store unique values
-      const matchingKey = Object.keys(row).find(
-        key => key.trim().toLowerCase() === field.toLowerCase()
-      );
-      if (matchingKey && row[matchingKey] && row[matchingKey].trim()) {
-        extractedSet.add(row[matchingKey].trim());
+    })
+    .on('data', (row) => {
+      if (validField) {
+        const matchingKey = Object.keys(row).find(
+          (key) => key.trim().toLowerCase() === field.toLowerCase()
+        );
+        if (matchingKey && row[matchingKey] && row[matchingKey].trim()) {
+          extractedSet.add(row[matchingKey].trim());
+        }
       }
     })
     .on('end', () => {
       const extractedData = Array.from(extractedSet);
       fs.writeFileSync(outputFile, extractedData.join(separator), 'utf8');
-      console.log(`Data extracted for field "${field}" and updated in ${outputFile}`);
+      console.log(`Data extracted for field "${field}" and saved to ${outputFile}`);
       callback(null, extractedData);
     })
     .on('error', (error) => {
@@ -100,20 +60,23 @@ app.post('/upload', upload.single('csv'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'CSV file is required' });
   }
-  
-  const field = req.body.field;
-  const separator = req.body.separator || ' '; // Default to space if empty
-  const fileType = req.body.fileType || 'txt'; // File type: 'txt' or 'csv'
+
+  const field = req.body.field?.trim();
+  const separator = req.body.separator || ' '; // Default to space
+  const fileType = req.body.fileType || 'txt'; // 'txt' or 'csv'
   const download = req.body.download === 'true'; // Should the file be downloadable?
-  
-  const csvFilePath = path.join(__dirname, req.file.path);
-  const outputFile = path.join(__dirname, `extracted.${fileType}`);
+
+  if (!field) {
+    return res.status(400).json({ error: 'Field name is required' });
+  }
+
+  const csvFilePath = path.resolve(req.file.path);
+  const outputFile = path.resolve(`extracted.${fileType}`);
 
   extractField(csvFilePath, field, separator, outputFile, (err, extracted) => {
-    fs.unlinkSync(csvFilePath); // Delete the uploaded CSV file after processing
-
     if (err) {
       console.error('Error extracting data:', err);
+      fs.unlinkSync(csvFilePath); // Delete the uploaded file if error occurs
       return res.status(400).json({ error: err.message });
     }
 
@@ -127,6 +90,7 @@ app.post('/upload', upload.single('csv'), (req, res) => {
       });
     }
 
+    fs.unlinkSync(csvFilePath); // Delete the uploaded CSV file after processing
     res.json({ extracted });
   });
 });
@@ -135,4 +99,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
->>>>>>> 3b66ccd (Merged local project into GitHub repository)
